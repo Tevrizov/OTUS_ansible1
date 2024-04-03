@@ -1,0 +1,8 @@
+---
+# defaults file for deploy_nginx_web
+nginx_listen_port: 8080
+tls_dir: /etc/nginx/ssl/
+key_file: nginx.key
+cert_file: nginx.crt
+conf_file: /etc/nginx/sites-available/default
+server_name: test1

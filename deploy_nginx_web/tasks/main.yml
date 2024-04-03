@@ -1,0 +1,52 @@
+---
+# tasks file for deploy_nginx_web
+- name: nginx is installed
+  package:
+      name: nginx
+      update_cache: true
+  notify: Restart nginx
+
+
+- name: Create directories for TLS certificates
+  file:
+      path: "{{ tls_dir }}"
+      state: directory
+      mode: '0750'
+  notify: Restart nginx
+
+
+- name: nginx config template
+  template:
+      src: nginx.conf.j2
+      dest: "{{ conf_file }}"
+      mode: '0644'
+  notify: Restart nginx
+
+- name: Enable service nginx 
+  ansible.builtin.systemd: 
+    name: nginx
+    enabled: true
+    masked: no
+
+- name: Enable configuration
+  file:
+      src: /etc/nginx/sites-available/default
+      dest: /etc/nginx/sites-enabled/default
+      state: link
+
+- name: Install home page
+  template:
+      src: index.html.j2
+      dest: /usr/share/nginx/html/index.html
+      mode: '0644'
+
+
+
+
+
+- name: Restart nginx
+  meta: flush_handlers
+
+#тестирую что ngin развернулся
+- include_tasks: test.yml
+

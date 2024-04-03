@@ -1,0 +1,16 @@
+---
+#test nginx
+
+- name: "Test it! https://192.168.0.28/index.html"
+  #delegate_to: "{{ server_name }}"
+  become: false
+  uri:
+    #url: 'http://192.168.0.28:8080/index.html'
+    url: 'http://{{ item }}:8080/index.html'
+    validate_certs: false
+    return_content: true
+  with_items:
+    - "192.168.0.28" 
+  register: this
+  failed_when: "'Running on ' not in this.content"
+  
